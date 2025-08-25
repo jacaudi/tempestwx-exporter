@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"tempest_exporter/tempest"
+	"tempestwx-exporter/internal/tempest"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
