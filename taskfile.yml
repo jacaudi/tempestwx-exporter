@@ -1,0 +1,11 @@
+version: '3'
+
+tasks:
+
+  build-local:
+    desc: Build local Docker image with dynamic labels
+    env:
+      BUILD_DATE:
+        sh: date -u +"%Y-%m-%dT%H:%M:%SZ"
+    cmds:
+      - docker buildx bake image-local

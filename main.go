@@ -11,9 +11,9 @@ import (
 	"os/signal"
 	"time"
 
-	"tempest_exporter/tempest"
-	"tempest_exporter/tempestapi"
-	"tempest_exporter/tempestudp"
+	"tempestwx-exporter/internal/tempest"
+	"tempestwx-exporter/internal/tempestapi"
+	"tempestwx-exporter/internal/tempestudp"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/push"

@@ -1,0 +1,60 @@
+target "docker-metadata-action" {
+  labels = {}
+}
+
+variable "BUILD_DATE" {
+  default = ""
+}
+
+variable "REGISTRY_IMAGE" {
+  default = ""
+}
+
+variable "SOURCE_COMMIT" {
+  default = ""
+}
+
+variable "APP" {
+  default = "tempestwx-exporter"
+}
+
+variable "VERSION" {
+  default = "latest"
+}
+
+variable "SOURCE" {
+  default = "https://github.com/jacaudi/tempestwx-exporter"
+}
+
+group "default" {
+  targets = ["image-local"]
+}
+
+target "image" {
+  inherits = ["docker-metadata-action"]
+  args = {}
+  labels = {
+    "org.opencontainers.image.source" = "${SOURCE}"
+    "org.opencontainers.image.created" = "${BUILD_DATE}"
+    "org.opencontainers.image.version" = "${VERSION}"
+    "org.opencontainers.image.title" = "${APP}" 
+    "org.opencontainers.image.description" = "Prometheus exporter for Tempest weather station data"
+    "org.opencontainers.image.licenses" = "MIT"
+  }
+}
+
+target "image-local" {
+  inherits = ["image"]
+  output = ["type=docker"]
+  tags = ["${APP}:${VERSION}"]
+}
+
+target "image-automated" {
+  inherits = ["image"]
+  platforms = [
+    "linux/amd64",
+    "linux/arm64"
+  ]
+  output = ["type=registry"]
+  tags = ["${REGISTRY_IMAGE}/${APP}:${VERSION}"]
+}
