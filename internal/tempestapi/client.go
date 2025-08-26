@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"tempest_exporter/tempestudp"
+	"tempestwx-exporter/internal/tempestudp"
 
 	"github.com/prometheus/client_golang/prometheus"
 )

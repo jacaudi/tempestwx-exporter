@@ -1,14 +1,27 @@
-FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.20 as builder
+# syntax=docker/dockerfile:1
 
-ARG TARGETPLATFORM
-ARG BUILDPLATFORM
-ARG TARGETOS
-ARG TARGETARCH
+FROM golang:1.25-alpine AS builder
 
-WORKDIR /app/
-ADD . .
-RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="-w -s" -o tempest_exporter main.go
+WORKDIR /app
 
-FROM --platform=${TARGETPLATFORM:-linux/amd64} scratch
-COPY --from=builder /app/tempest_exporter /tempest_exporter
-ENTRYPOINT ["/tempest_exporter"]
+# Copy go mod files first for better layer caching
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build the application
+RUN CGO_ENABLED=0 \
+    go build -ldflags="-w -s" -o tempestwx-exporter main.go
+
+# Final stage
+FROM cgr.dev/chainguard/static:latest
+
+# Copy binary
+COPY --from=builder /app/tempestwx-exporter /tempestwx-exporter
+
+# Use non-root user
+USER 65532:65532
+
+ENTRYPOINT ["/tempestwx-exporter"]

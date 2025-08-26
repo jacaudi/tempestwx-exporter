@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"tempest_exporter/tempest"
+	"tempestwx-exporter/internal/tempest"
 
 	"github.com/prometheus/client_golang/prometheus"
 	io_prometheus_client "github.com/prometheus/client_model/go"

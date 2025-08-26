@@ -1,0 +1,25 @@
+---
+name: Tests
+description: Runs Go Tests
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ">=1.20"
+
+    - name: Prepare Go modules
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      run: |
+        go clean -modcache
+        go mod tidy
+
+    - name: Run all Tests
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      run: |
+        go version
+        go test -json ./... 

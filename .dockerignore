@@ -1,0 +1,47 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test coverage
+*.out
+coverage.txt
+
+# Dependencies (if using vendor)
+# vendor/
+
+# Docker
+Dockerfile*
+docker-compose*
+docker-bake.hcl
+.dockerignore
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/

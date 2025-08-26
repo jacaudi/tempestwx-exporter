@@ -1,0 +1,18 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+      "config:recommended",
+      ":dependencyDashboard",
+      ":disableRateLimiting",
+      ":timezone(America/Los_Angeles)",
+      ":semanticCommits"
+    ],
+    "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+    "suppressNotifications": [
+      "prEditedNotification",
+      "prIgnoreNotification"
+    ],
+    "postUpdateOptions": [
+      "gomodTidy"
+    ]
+}
