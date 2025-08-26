@@ -14,5 +14,6 @@
     ],
     "postUpdateOptions": [
       "gomodTidy"
-    ]
+    ],
+    "forkProcessing": "enabled"
 }
