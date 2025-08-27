@@ -12,6 +12,7 @@ on:
       - '.github/workflows/**'
       - '.github/actions/**'
       - 'Dockerfile*'
+      - 'docker-bake.hcl'
 
 jobs:
   tests:
