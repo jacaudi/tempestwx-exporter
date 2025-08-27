@@ -11,34 +11,21 @@ inputs:
     type: boolean
     required: false
     default: true
-  latest:
-    description: Update latest tag
-    type: boolean
-    required: false
-    default: true
-  tag-strategy:
-    description: Tag strategy (sha, latest, semver)
-    type: string
-    required: false
-    default: "auto"
 
 runs:
   using: composite
   steps:
-    - name: Docker meta
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ghcr.io/${{ github.repository }}
-        flavor: |
-          latest=${{ fromJSON(inputs.latest) }}
-        tags: |
-          type=ref,event=branch,enable=${{ inputs.tag-strategy == 'auto' || inputs.tag-strategy == 'branch' }}
-          type=sha,prefix={{branch}}-,enable=${{ inputs.tag-strategy == 'sha' }}
-          type=semver,pattern={{version}},prefix=v,enable=${{ inputs.tag-strategy == 'semver' || inputs.tag-strategy == 'auto' }}
-          type=semver,pattern={{major}}.{{minor}},prefix=v,enable=${{ inputs.tag-strategy == 'semver' || inputs.tag-strategy == 'auto' }}
-          type=semver,pattern={{major}},prefix=v,enable=${{ inputs.tag-strategy == 'semver' || inputs.tag-strategy == 'auto' }}
-          type=raw,value=latest,enable=${{ inputs.tag-strategy == 'latest' && fromJSON(inputs.latest) }}
+    - name: Generate version from git
+      id: version
+      shell: bash
+      run: |
+        if [ "${{ github.ref_type }}" = "tag" ]; then
+          echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+        elif [ "${{ github.ref_name }}" = "main" ]; then
+          echo "version=latest" >> $GITHUB_OUTPUT
+        else
+          echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+        fi
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -55,17 +42,14 @@ runs:
         username: ${{ github.actor }}
         password: ${{ inputs.token }}
 
-    - name: Build Docker Image
+    - name: Build and push with Bake
       if: github.event_name != 'pull_request'
-      uses: docker/build-push-action@v6
+      uses: docker/bake-action@v6
+      env:
+        BUILD_DATE: ${{ github.event.head_commit.timestamp }}
+        REGISTRY_IMAGE: ghcr.io/${{ github.repository }}
+        SOURCE_COMMIT: ${{ github.sha }}
+        VERSION: ${{ steps.version.outputs.version }}
       with:
-        context: .
-        file: ./Dockerfile
-        platforms: linux/amd64,linux/arm64
+        targets: image-automated
         push: ${{ fromJSON(inputs.push) }}
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        build-args: |
-          VERSION=${{ steps.meta.outputs.version }}
-          BUILDTIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
-          REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
