@@ -34,4 +34,4 @@ Minimal, via environment variables:
 
 ## Source Credit
 
-- [tempestwx-exporter](https://github.com/jacaudi/tempestwx-exporter)
+- [tempest-exporter](https://github.com/willglynn/tempest_exporter) - Started as a fork of this project.
