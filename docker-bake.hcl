@@ -57,4 +57,12 @@ target "image-automated" {
   ]
   output = ["type=registry"]
   tags = ["${REGISTRY_IMAGE}:${VERSION}"]
+  annotations = [
+    "index:org.opencontainers.image.source=${SOURCE}",
+    "index:org.opencontainers.image.created=${BUILD_DATE}",
+    "index:org.opencontainers.image.version=${VERSION}",
+    "index:org.opencontainers.image.title=${APP}",
+    "index:org.opencontainers.image.description=Prometheus exporter for Tempest weather station data",
+    "index:org.opencontainers.image.licenses=MIT"
+  ]
 }
