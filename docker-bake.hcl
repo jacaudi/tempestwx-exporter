@@ -56,5 +56,5 @@ target "image-automated" {
     "linux/arm64"
   ]
   output = ["type=registry"]
-  tags = ["${REGISTRY_IMAGE}/${APP}:${VERSION}"]
+  tags = ["${REGISTRY_IMAGE}:${VERSION}"]
 }
