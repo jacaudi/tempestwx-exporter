@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"strconv"
 	"time"
 
 	"tempestwx-exporter/internal/tempest"
@@ -62,6 +63,7 @@ func listenAndPush(ctx context.Context) {
 	if jobName == "" {
 		jobName = "tempest"
 	}
+	logUDP, _ := strconv.ParseBool(os.Getenv("LOG_UDP"))
 	log.Printf("pushing to %q with job name %q", pushUrl, jobName)
 
 	more := make(chan bool, 1)
@@ -83,7 +85,9 @@ func listenAndPush(ctx context.Context) {
 	}()
 
 	if err := listen(ctx, func(b []byte, addr *net.UDPAddr) error {
-		log.Printf("UDP in: %s", string(b))
+		if logUDP {
+			log.Printf("UDP in: %s", string(b))
+		}
 		report, err := tempestudp.ParseReport(b)
 		if err != nil {
 			log.Printf("error parsing report from %s: %s", addr, err)
